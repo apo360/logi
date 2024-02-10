@@ -13,6 +13,11 @@ trait PasswordValidationRules
      */
     protected function passwordRules(): array
     {
-        return ['required', 'string', new Password, 'confirmed'];
+        $rules = ['required', 'string', new Password, 'confirmed', 'min:8'];
+
+        // Adicionar regra para pelo menos um número e uma letra maiúscula
+        $rules[] = 'regex:/^(?=.*[A-Z])(?=.*[0-9])/';
+
+        return $rules;
     }
 }

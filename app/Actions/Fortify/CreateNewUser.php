@@ -20,16 +20,18 @@ class CreateNewUser implements CreatesNewUsers
     public function create(array $input): User
     {
         Validator::make($input, [
-            'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => $this->passwordRules(),
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['accepted', 'required'] : '',
         ])->validate();
 
         return User::create([
-            'name' => $input['name'],
             'email' => $input['email'],
             'password' => Hash::make($input['password']),
+            'password_change_required' => true, // Marque como false para indicar que a senha foi alterada
+            'password_expired' => now()->addDays(0), // Defina a nova data de expiração, por exemplo, 30 dias a partir de agora
+            'Fk_Role' => 1
+            
         ]);
     }
 }

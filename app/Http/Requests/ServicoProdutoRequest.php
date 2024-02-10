@@ -26,7 +26,7 @@ class ServicoProdutoRequest extends FormRequest
             'ProductCode' => 'required|string|max:60',
             'ProductDescription' => 'required|string|max:200',
             'ProductNumberCode' => 'nullable|string',
-            'ProductGroup' => 'nullable|string',
+            'ProductGroup' => 'nullable|integer',
         ];
     }
 }

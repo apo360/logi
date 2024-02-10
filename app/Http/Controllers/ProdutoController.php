@@ -9,6 +9,7 @@ use App\Models\ProductType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\ProductExemptionReason;
+use App\Models\ProdutoGrupo;
 
 
 class ProdutoController extends Controller
@@ -18,13 +19,26 @@ class ProdutoController extends Controller
      */
     public function index()
     {
-        // Obtém todos os produtos do banco de dados
-        $products = Produto::all();
-
+        // Obtém todos os produtos do banco de dados 
+        $products = DB::table('Listar_Produtos')->get();
+        $productTypes = ProductType::all();
+        $productExemptionReasons = ProductExemptionReason::all();
         $taxas = DB::table('TaxTable')->get();
+        $grupoProduto = ProdutoGrupo::all();
 
         // Retorna a lista de produtos como uma resposta JSON
-        return view('service.list_service_produto', compact('products', 'taxas'));
+        return view('service.list_service_produto', compact('products', 'taxas', 'productTypes', 'productExemptionReasons', 'grupoProduto'));
+    }
+
+    public function InsertGrupo(Request $request) {
+        try {
+            ProdutoGrupo::create(
+                ['descricao' => $request->input('descricao')]
+            );
+        } catch (\Exception $e) {
+             // Trate a exceção ou retorne um erro apropriado
+             return DatabaseErrorHandler::handle($e);
+        }
     }
 
     /**
@@ -81,9 +95,12 @@ class ProdutoController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Produto $produto)
+    public function edit($produtoID)
     {
-        //
+        $produto = Produto::findOrFail($produtoID);
+        $productTypes = ProductType::all();
+        $productExemptionReasons = ProductExemptionReason::all();
+        return view('service.edit_service', compact('produto', 'productTypes', 'productExemptionReasons'));
     }
 
     /**

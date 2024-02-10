@@ -22,10 +22,10 @@ class PortuariaRequest extends FormRequest
     public function rules()
     {
         return [
-            'ProcessoID' => 'required|integer',
-            'EP14' => 'nullable|numeric|regex:/^\d+(\.\d{1,2})?$/',
-            'EP17' => 'nullable|numeric|regex:/^\d+(\.\d{1,2})?$/',
-            'Terminal' => 'nullable|numeric|regex:/^\d+(\.\d{1,2})?$/',
+            'Fk_processo' => 'required|integer',
+            'ep14' => 'nullable|numeric|regex:/^\d+(\.\d{1,2})?$/',
+            'ep17' => 'nullable|numeric|regex:/^\d+(\.\d{1,2})?$/',
+            'terminal' => 'nullable|numeric|regex:/^\d+(\.\d{1,2})?$/',
         ];
     }
 }

@@ -2,7 +2,7 @@
     <x-authentication-card>
         <x-slot name="logo">
             <x-authentication-card-logo />
-            <h4 style='text-align:center'>{{ config("app.name")}}</h4>
+            <h2 style='text-align:center'>{{ config("app.name")}}</h2>
         </x-slot>
 
         <x-validation-errors class="mb-4" />
@@ -13,10 +13,28 @@
             </div>
         @endif
 
+        <div class="mt-4">
+            <span style="font-family: 'Courier New', Courier, monospace; font-size: 24px;">Faça Login em LogiGate</span>
+        </div>
+        <hr>
+        <div class="mt-4">
+            <p>Logigate ID is a new personal profile for builders <a href="#">Ver mais</a></p>
+        </div>
+        <div class="mt-3">
+            <p> <i class="fas fa-check"></i> Get started for free</p>
+        </div>
+        <div class="mt-3">
+            <p> <i class="fas fa-check"></i>Complement your existing Logigate accounts </p>
+        </div>
+        <div class="mt-3">
+            <p> <i class="fas fa-check"></i>Secure your login with optional 2FA </p>
+        </div>
         <form method="POST" action="{{ route('login') }}">
             @csrf
 
-            <div>
+            
+
+            <div class="mt-4">
                 <x-label for="email" value="{{ __('Email') }}" />
                 <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
             </div>

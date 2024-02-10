@@ -17,7 +17,7 @@
                             </div>
                             <div class="float-right">
                                 <div class="btn-group">
-                                    <x-button class="btn btn-default">
+                                    <x-button class="btn btn-default ">
                                         <i class="fas fa-user-plus btn-icon" style="color: #0170cf;"></i> {{ __('Inserir Cliente') }}
                                     </x-button>
                                     <a type="button" href="{{ route('customers.create') }}" class="btn btn-default" style="color: black;">
@@ -48,7 +48,7 @@
                                     <div class="col-md-6">
                                         <div class="mt-2">
                                             <x-label for="CustomerTaxID" value="{{ __('NIF') }}" />
-                                            <x-input-button namebutton="Validar NIF" id="CustomerTaxID" type="text" name="CustomerTaxID" value="000000"/>
+                                            <x-input-button namebutton="Validar NIF" idButton="CustomerTaxID" type="text" name="CustomerTaxID" value="000000"/>
                                         </div>
                                     </div>
                                     <br><hr style='border: 1px solid #ccc;'>

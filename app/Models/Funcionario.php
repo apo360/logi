@@ -11,7 +11,7 @@ class Funcionario extends Model
 {
     use HasFactory;
 
-    protected $table = 'funcionarios';
+    protected $table = 'Funcionarios';
 
     public function __construct(array $attributes = []){
 

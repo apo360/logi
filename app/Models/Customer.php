@@ -5,19 +5,31 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use App\Traits\SharedFieldsTrait;
 
 class Customer extends Model
 {
     use HasFactory;
 
-    protected $table = 'Customer';
+    use SharedFieldsTrait;
+
+    protected $table = "Customers";
 
     protected $fillable = [
         'CustomerID',
         'AccountID',
         'CustomerTaxID',
         'CompanyName',
+        'Contact',
+        'BillingAddress_StreetName',
+        'BillingAddress_BuildingNumber',
+        'BillingAddress_AddressDetail',
+        'City',
+        'PostalCode',
+        'Province',
+        'Country',
         'Telephone',
+        'Fax',
         'Email',
         'Website',
         'SelfBillingIndicator'
@@ -43,7 +55,7 @@ class Customer extends Model
      */
     public function invoices()
     {
-        return $this->hasMany(Invoice::class, 'CustomerID');
+        return $this->hasMany(SalesInvoice::class, 'CustomerID');
     }
 
     /**
@@ -52,6 +64,6 @@ class Customer extends Model
      */
     public function processes()
     {
-        return $this->hasMany(Process::class, 'CustomerID');
+        return $this->hasMany(Processo::class, 'CustomerID');
     }
 }

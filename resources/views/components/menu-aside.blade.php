@@ -149,6 +149,7 @@
                   <i class="nav-icon fas fa-gear"></i><p> Configurações <i class="right fas fa-angle-left"></i> </p>
                   <ul class="nav nav-treeview">
                       <li> <a href="/Configuracoes/RH">RH</a> </li>
+                      <li> <i class="nav-icon fas fa-user-plus"></i><a href="{{route('usuarios.create')}}">Criar Usuario</a> </li>
                   </ul>
 
                 </a>

@@ -29,24 +29,24 @@
         <script>
             $(function () {
                 $("#example1").DataTable({
-                    "responsive": true, "lengthChange": false, "autoWidth": false
+                    "responsive": true, "lengthChange": false, "autoWidth": true
                 }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
             });
         </script>
     @endsection
 @endonce
 
-<table id="example1" class="table table-striped table-hover">
+<table id="example1" class="table table-hover table-dark">
     <thead>
         @foreach ($tableData['headers'] as $header)
-            <th scope = "col" class="px-6 py-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ $header }}</th>
+            <th scope = "col" class="px-6 py-6 text-left text-xs font-medium uppercase tracking-wider">{{ $header }}</th>
         @endforeach
     </thead>
     <tbody>
         @foreach ($tableData['rows'] as $row)
             <tr>
                 @foreach ($row as $cell)
-                    <td scope = "col" class="px-6 py-6 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{!! $cell !!}</td>
+                    <td scope = "col" class="px-6 py-6 bg-gray-50 text-left text-s font-medium text-gray-500 uppercase tracking-wider">{!! $cell !!}</td>
                 @endforeach
             </tr>
         @endforeach

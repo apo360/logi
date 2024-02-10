@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('Product', function (Blueprint $table) {
+        Schema::create('Product_Service', function (Blueprint $table) {
             $table->id();
             $table->enum('ProductType', ['P', 'S', 'O', 'E', 'I']);
             $table->string('ProductCode', 60);

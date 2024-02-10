@@ -25,8 +25,8 @@ class CustomerRequest extends FormRequest
         $id = $this->isMethod('PUT') ? $this->route('customer') : null;
 
         return [
-            'CustomerID' => ['required', 'string', 'max:30', $id ? Rule::unique('Customer')->ignore($id) : ''],
-            'CustomerTaxID' => ['nullable','required', 'string', 'min:6', 'max:14', Rule::unique('Customer')->ignore($id, 'CustomerID')], // NIF deve ter exatamente 14 dígitos
+            'CustomerID' => ['required', 'string', 'max:30', $id ? Rule::unique('Customers')->ignore($id) : ''],
+            'CustomerTaxID' => ['nullable','required', 'string', 'min:6', 'max:14', Rule::unique('Customers')->ignore($id, 'CustomerID')], // NIF deve ter exatamente 14 dígitos
             'AccountID' => ['nullable', 'string', 'max:30'],
             'CompanyName' => ['required', 'string', 'max:100'],
             'Telephone' => ['required', 'string', 'max:20'], // Defina um tamanho máximo apropriado para o telefone

@@ -10,19 +10,23 @@ class Processo extends Model
 {
     use HasFactory;
 
-    protected $tableName = 'processos';
 
-    protected $primaryKey = 'ProcessoID';
+    protected $table = 'Processos'; // Nome da tabela
+
+    protected $id = 'ProcessoID';
 
     protected $fillable = [
         'ProcessoID',
         'NrProcesso',
         'ContaDespacho',
-        'ClienteID',
+        'CustomerID',
         'RefCliente',
         'Descricao',
         'DataAbertura',
-        'Status',
+        'TipoProcesso',
+        'Situacao',
+        'UserID',
+        // Adicione outros campos fillable conforme necessário
     ];
 
     protected $dates = [
@@ -31,23 +35,32 @@ class Processo extends Model
         'updated_at'
     ];
 
+    public static function getLastInsertedId()
+    {
+        $ultimoProcesso = self::latest()->first();
+
+        if ($ultimoProcesso) {
+            return $ultimoProcesso->ProcessoID;
+        }
+
+        return null;
+    }
+
+    // Relacionamento com a tabela Importacao
+    public function importacao()
+    {
+        return $this->hasOne(Importacao::class, 'Fk_processo', 'ProcessoID');
+    }
+
+    // Relacionamento com a tabela Exportacao
+    public function exportacao()
+    {
+        return $this->hasOne(Exportacao::class, 'Fk_processo', 'ProcessoID');
+    }
+
     /**
      * 
      */
-    public static function auto_increment()
-    {
-        $lastProcesso = self::orderBy('ProcessoID', 'desc')->first();
-
-        if ($lastProcesso) {
-            // Obtém o último valor do ProcessoID e incrementa 1
-            $newProcessoID = $lastProcesso->ProcessoID + 1;
-        } else {
-            // Caso não haja registros, começa com o valor 1
-            $newProcessoID = 1;
-        }
-
-        return $newProcessoID;
-    }
 
     public function getID()
     {
@@ -83,7 +96,7 @@ class Processo extends Model
      */
     public function cliente()
     {
-        return $this->belongsTo(Customer::class, 'ClienteID');
+        return $this->belongsTo(Customer::class, 'CustomerID');
     }
 
      /**
@@ -104,13 +117,20 @@ class Processo extends Model
     }
 
     /**
-     * Obtém a contagem total de processos.
+     * Metodos para obter estatisticas relativamente aos processos.
      *
      * @return int
      */
+    // Método para obter o total de processos
     public static function getTotalProcessos()
     {
         return self::count();
+    }
+
+    // Método para obter o total de processos por tipo
+    public static function getTotalProcessosPorTipo($tipo)
+    {
+        return self::where('TipoProcesso', $tipo)->count();
     }
 
     /**
@@ -130,45 +150,22 @@ class Processo extends Model
      * @return \Illuminate\Database\Eloquent\Relations\hasMany
      */
 
-    // Definindo relação One-to-Many com o modelo Mercadoria
-    public function mercadorias()
-    {
-        return $this->hasMany(Mercadoria::class, 'ProcessoID');
-    }
-
-    // Definindo relação One-to-One com o modelo Cobrado
-    public function cobrado()
-    {
-        return $this->hasOne(Cobrado::class, 'ProcessoID');
-    }
-
-    // Definindo relação One-to-One com o modelo Liquidacao
-    public function liquidacao()
-    {
-        return $this->hasOne(Liquidacao::class, 'ProcessoID');
-    }
-
     // Definindo relação One-to-One com o modelo Portuaria
     public function portuaria()
     {
-        return $this->hasOne(Portuaria::class, 'ProcessoID');
+        return $this->hasOne(TarifaPortuaria::class, 'Fk_processo','ProcessoID');
     }
 
     // Definindo relação One-to-One com o modelo Equivalencia
-    public function equivalencia()
+    public function dar()
     {
-        return $this->hasOne(Equivalencia::class, 'ProcessoID');
+        return $this->hasOne(TarifaDAR::class, 'Fk_processo','ProcessoID');
     }
 
     //Definindo relação One-to-One com o modelo DU
     public function du()
     {
-        return $this->hasOne(DU::class, 'ProcessoID');
-    }
-
-    public function arquivo()
-    {
-        return $this->hasMany(Arquivo::class, 'ProcessoID');
+        return $this->hasOne(TarifaDU::class, 'Fk_processo','ProcessoID');
     }
 
 }

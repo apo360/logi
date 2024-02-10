@@ -85,7 +85,7 @@ class CustomerController extends Controller
             // Define a mensagem de sucesso e redireciona para a página de edição do cliente
             return redirect()->route('customers.edit', ['customer' => $newCustomer->id])->with('success', 'Cliente criado com sucesso!');
 
-        } catch (QueryException $e) {
+        } catch (QueryException $e) { 
             DB::rollBack();
 
             return DatabaseErrorHandler::handle($e);
@@ -224,9 +224,19 @@ class CustomerController extends Controller
         
     }
 
+    // Pegar processos por cliente.
     public function getProcessoByCustomer($CustomerId, $status){
         $processo = Processo::where('ClienteID', $CustomerId)->where('Status', $status)->get();
         
         return response()->json(['processo' => $processo]); 
+    }
+
+
+    public function obterUltimoClienteAdicionado()
+    {
+        // Lógica para obter o ID do último cliente adicionado
+        $ultimoCliente = Customer::latest()->first();
+        
+        return response()->json(['cliente_id' => $ultimoCliente->id]);
     }
 }

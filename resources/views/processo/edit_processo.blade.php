@@ -1,4 +1,10 @@
 
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="...">
+<!-- Bootstrap JavaScript (popper.js is required) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="..." crossorigin="anonymous"></script>
+
+
 <style>
         .body-doc {
             font-family: Arial, sans-serif;
@@ -56,26 +62,26 @@
         input[type="file"] {
             display: none;
         }
-    </style>
+</style>
 
 <x-app-layout>
     <x-slot name="header">
         <x-breadcrumb title="Editar Processo" breadcrumb="Editar Processo" />
     </x-slot>
     <br>
+
     <x-validation-errors class="mb-4" />
 
-    @if (session('status'))
-        <div class="mb-4 font-medium text-sm text-green-600">
-            {{ session('status') }}
+    @if(session('success'))
+        <div>
+            <div class="font-medium text-green-600">{{ __('Sucesso!') }}</div>
+
+            <p class="mt-3 text-sm text-green-600">
+                {{ session('success') }}
+            </p>
         </div>
     @endif
 
-    @if (Session::has('error'))
-        <div class="alert alert-success">
-            {{ Session::get('error') }}
-        </div>
-    @endif
 
     <form action="{{ route('processos.update', $processo->ProcessoID) }}" method="POST">
         @csrf
@@ -92,352 +98,309 @@
                                     </a>
                                 </x-button>
                             </div>
-
-                            <div class="items-center">
+                            <div class="float-right">
                                 <div class="btn-group">
-                                    <x-button type="submit" class="button">{{ __('Atualizar') }}</x-button>
-                                    <x-button>
-                                        <a class="button " href="{{ route('arquivos.edit', $processo->ProcessoID) }}">
+                                    <x-button class="btn btn-dark" type="submit">
+                                         {{ __('Atualizar') }}
+                                    </x-button>
+                                    <div class="input-group-append">
+                                        <a class="btn btn-dark" href="{{ route('arquivos.edit', $processo->ProcessoID) }}">
                                             {{ __('Upload') }}
                                         </a>
-                                    </x-button>
-                                    <x-button>
-                                        <a class="button" href="{{ route('processos.factura', $processo->ProcessoID) }}">
-                                            {{ __('Factura') }}
-                                        </a>
-                                    </x-button>
+                                    </div>
+                                    
+                                    <a class="btn btn-dark" href="{{ route('processos.factura', $processo->ProcessoID) }}">
+                                        {{ __('Factura') }}
+                                    </a>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="card card-navy">
+                <div class="card card-dark">
                     <div class="card-header">
                         <div class="">
                             <div class="card-title flex items-center">
                                 <strong>Nº Processo:</strong> <span>{{ $processo->NrProcesso }}</span>
                                 <strong>Cliente : </strong> <span>{{ $processo->cliente->CompanyName }}</span>
                                 <strong>Ref/Factura : </strong> <span>{{ $processo->RefCliente }}</span>
+                                <input type="hidden" name="Fk_processo" id="Fk_processo" value="{{ $processo->ProcessoID }}">
                             </div>
                         </div>
                     </div>
 
                     <div class="card-body">
-                        <!-- input's hidden's -->
-                        <x-input type="text" name="NrProcesso" id="NrProcesso"  class="hidden" value="{{ $processo->NrProcesso }}" />
-                        <x-input type="text" name="ClienteID" id="ClienteID" class="hidden" value="{{ $processo->cliente->Id }}" />
-                        <x-input type="text" name="RefCliente" id="RefCliente"  class="hidden" value="{{ $processo->RefCliente }}" />
-
-                        <div class="row">
-                            <table class="table" id="mercadorias-table">
-                                <thead>
-                                    <tr>
-                                        <th>Marcas</th>
-                                        <th>Número</th>
-                                        <th>Quantidade</th>
-                                        <th>Qualificação</th>
-                                        <th>Designação</th>
-                                        <th>Peso (Kg)</th>
-                                        
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($mercadorias as $mercadoria)
+                        <div class="card card-default">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <span>Mercadorias</span>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-sm" id="mercadorias-table">
+                                    <thead>
                                         <tr>
-                                            <td>{{ $mercadoria->marcas }}</td>
-                                            <td>{{ $mercadoria->numero }}</td>
-                                            <td>{{ $mercadoria->quantidade }}</td>
-                                            <td>{{ $mercadoria->qualificacaoID }}</td>
-                                            <td>{{ $mercadoria->designacao }}</td>
-                                            <td>{{ $mercadoria->peso }}</td>
-                                            <!-- Exiba outros campos da mercadoria, se houver -->
+                                            <th>Marcas</th>
+                                            <th>Número</th>
+                                            <th>Quantidade</th>
+                                            <th>Qualificação</th>
+                                            <th>Designação</th>
+                                            <th>Peso (Kg)</th>
+                                            
                                         </tr>
-                                    @endforeach
-                                    
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        @if ($mercadorias)
+                                            @foreach ($mercadorias as $mercadoria)
+                                                <tr>
+                                                    <td>{{ $mercadoria->NCM_HS }}</td>
+                                                    <td>{{ $mercadoria->NCM_HS_Numero }}</td>
+                                                    <td>{{ $mercadoria->Quantidade }}</td>
+                                                    <td>{{ $mercadoria->Qualificacao }}</td>
+                                                    <td>{{ $mercadoria->Descricao }}</td>
+                                                    <td>{{ $mercadoria->Peso }}</td>
+                                                    <!-- Exiba outros campos da mercadoria, se houver -->
+                                                </tr>
+                                            @endforeach
+                                        @else
+                                            <tr>
+                                                <td colspan="3">Nenhuma mercadoria disponível</td>
+                                            </tr>
+                                        @endif
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
+                        <ul class="nav nav-tabs nav-dark" id="myTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">DAR</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">DU</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="messages-tab" data-bs-toggle="tab" data-bs-target="#messages" type="button" role="tab" aria-controls="messages" aria-selected="false">Taxas Portuárias</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settings" type="button" role="tab" aria-controls="settings" aria-selected="false">Documentos</button>
+                            </li>
+                        </ul>
 
-                        <div class="container-tabs">
-                            <!-- # Create tabs for DAR, DU, -->
-                            <ul class="nav nav-tabs" id="myTab" role="tablist">
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link " id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">DU</button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link " id="dar-tab" data-bs-toggle="tab" data-bs-target="#dar" type="button" role="tab" aria-controls="dar" aria-selected="false">DAR</button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link active" id="cobrado-tab" data-bs-toggle="tab" data-bs-target="#cobrado" type="button" role="tab" aria-controls="cobrado" aria-selected="false">Cobranças</button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link " id="ficheiro-tab" data-bs-toggle="tab" data-bs-target="#ficheiro" type="button" role="tab" aria-controls="ficheiro" aria-selected="false">Ficheiros</button>
-                                </li>
-                            </ul>
-                            <!-- Tab panes -->
-                            <div class="tab-content" id="myTabContent">
-                                <div class="tab-pane fade show " id="home" role="tabpanel" aria-labelledby="home-tab">
-                                    <input type="hidden" name="ProcessoID" value="{{ $processo->ProcessoID }}">
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                                <div class="row">
+                                    <div class="col-md-4 mt-4">
+                                        <label for="N_Dar">Nº do DAR</label>
+                                        <input type = "text" name = "N_Dar" class="form-control" value="{{ $processo->dar->N_Dar ?? '' }}" style="border: 0px; border-bottom: 1px solid black;">
+                                    </div>
+
+                                    <div class="col-md-4 mt-4">
+                                        <label for="DataEntrada">Data de Entrada</label>
+                                        <input type = "date" name = "DataEntrada" class="form-control" value="{{$processo->dar ? $processo->dar->DataEntrada : '' }}" style="border: 0px; border-bottom: 1px solid black;">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4 mt-4">
+                                        <label for="direitos">Direitos</label>
+                                        <input type = "decimal" name = "direitos" class="form-control subtotal-input" value="{{$processo->dar ? $processo->dar->direitos : '0.00'}}" style="border: 0px; border-bottom: 1px solid black;">
+                                    </div>
+                                    <div class="col-md-4 mt-4">
+                                        <label for="emolumentos">Emolumentos</label>
+                                        <input type = "decimal" name = "emolumentos" class="form-control subtotal-input" value="{{$processo->dar ? $processo->dar->emolumentos : '0.00'}}" style="border: 0px; border-bottom: 1px solid black;">
+                                    </div>
+                                    <div class="col-md-4 mt-4">
+                                        <label for="iva_aduaneiro">IVA Aduaneiro</label>
+                                        <input type = "decimal" name = "iva_aduaneiro" class="form-control subtotal-input" value="{{$processo->dar ? $processo->dar->iva_aduaneiro : '0.00'}}" style="border: 0px; border-bottom: 1px solid black;">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4 mt-4">
+                                        <label for="iec">IEC</label>
+                                        <input type = "decimal" name = "iec" class="form-control subtotal-input" value="{{$processo->dar ? $processo->dar->iec : '0.00'}}" style="border: 0px; border-bottom: 1px solid black;">
+                                
+                                    </div>
+                                    <div class="col-md-4 mt-4">
+                                        <label for="impostoEstatistico">Imposto Estatístico</label>
+                                        <input type = "decimal" name = "impostoEstatistico" class="form-control subtotal-input" value="{{$processo->dar ? $processo->dar->impostoEstatistico : '0.00'}}" style="border: 0px; border-bottom: 1px solid black;">
+                                
+                                    </div>
+                                    <div class="col-md-4 mt-4">
+                                        <label for="juros_mora">Juros de Mora</label>
+                                        <input type = "decimal" name = "juros_mora" class="form-control subtotal-input" value="{{$processo->dar ? $processo->dar->juros_mora : '0.00'}}" style="border: 0px; border-bottom: 1px solid black;">
+                                
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4 mt-4">
+                                        <label for="multas">Multas</label>
+                                        <input type = "decimal" name = "multas" class="form-control subtotal-input" value="{{$processo->dar ? $processo->dar->multas : '0.00'}}" style="border: 0px; border-bottom: 1px solid black;">
+                                
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4 mt-4">
+                                        <label for="subtotal">Sub-Total</label>
+                                        <input type = "decimal" name = "subtotal" class="form-control subtotal" class="subtotal-input" value="{{$processo->dar ? $processo->dar->subtotal : '0.00'}}" style="border: 0px; border-bottom: 1px solid black;">
+                                    </div>
+                                </div>
+                                
+                            </div>
+
+                            <div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                                <div class="row">
+                                    <div class="col-md-4 mt-4">
+                                        <label for="NrDU">Nº de Ordem DU</label>
+                                        <input type="text" name="NrDU" class="form-control tarifa-du-input" value="{{ $processo->du ? $processo->du->NrDU : '' }}" style="border: 0px; border-bottom: 1px solid black;">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4 mt-4">
+                                        <label for="lmc">LMC</label>
+                                        <input type="decimal" name="lmc" class="form-control tarifa-du-input" value="{{ $processo->du ? $processo->du->lmc : '0.00' }}" style="border: 0px; border-bottom: 1px solid black;">
+                                    </div>
+
+                                    <div class="col-md-4 mt-4">
+                                        <label for="navegacao">Navegação</label>
+                                        <input type="decimal" name="navegacao" class="form-control tarifa-du-input" value="{{ $processo->du ? $processo->du->navegacao : '0.00' }}" style="border: 0px; border-bottom: 1px solid black;">
+                                    </div>
+
+                                    <div class="col-md-4 mt-4">
+                                        <label for="viacao">Viação</label>
+                                        <input type="decimal" name="viacao" class="form-control tarifa-du-input" value="{{ $processo->du ? $processo->du->viacao : '0.00' }}" style="border: 0px; border-bottom: 1px solid black;">
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4 mt-4">
+                                        <label for="taxa_aeroportuaria">Taxa Aeroportuária</label>
+                                        <input type="decimal" name="taxa_aeroportuaria" class="form-control tarifa-du-input" value="{{ $processo->du ? $processo->du->taxa_aeroportuaria : '0.00' }}" style="border: 0px; border-bottom: 1px solid black;">
+                                    </div>
+
+                                    <div class="col-md-4 mt-4">
+                                        <label for="caucao">Caução</label>
+                                        <input type="decimal" name="caucao" class="form-control tarifa-du-input" value="{{ $processo->du ? $processo->du->caucao : '0.00' }}" style="border: 0px; border-bottom: 1px solid black;">
+                                    </div>
+
+                                    <div class="col-md-4 mt-4">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label for="honorario">Honorário</label>
+                                                <input type="decimal" name="honorario" class="form-control tarifa-du-input" value="{{ $processo->du ? $processo->du->honorario : '0.00' }}" style="border: 0px; border-bottom: 1px solid black;">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="honorario_iva">Honorário IVA</label>
+                                                <input type="decimal" name="honorario_iva" class="form-control tarifa-du-input" value="{{ $processo->du ? $processo->du->honorario_iva : '0.00' }}" style="border: 0px; border-bottom: 1px solid black;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4 mt-4">
+                                        <label for="frete">Frete</label>
+                                        <input type="decimal" name="frete" class="form-control tarifa-du-input" value="{{ $processo->du ? $processo->du->frete : '0.00' }}" style="border: 0px; border-bottom: 1px solid black;">
+                                    </div>
+
+                                    <div class="col-md-4 mt-4">
+                                        <label for="carga_descarga">Carga/Descarga</label>
+                                        <input type="decimal" name="carga_descarga" class="form-control tarifa-du-input" value="{{ $processo->du ? $processo->du->carga_descarga : '0.00' }}" style="border: 0px; border-bottom: 1px solid black;">
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4 mt-4">
+                                        <label for="orgaos_oficiais">Órgãos Oficiais</label>
+                                        <input type="decimal" name="orgaos_oficiais" class="form-control tarifa-du-input" value="{{ $processo->du ? $processo->du->orgaos_oficiais : '0.00' }}" style="border: 0px; border-bottom: 1px solid black;">
+                                    </div>
+
+                                    <div class="col-md-4 mt-4">
+                                        <label for="deslocacao">Deslocação</label>
+                                        <input type="decimal" name="deslocacao" class="form-control tarifa-du-input" value="{{ $processo->du ? $processo->du->deslocacao : '0.00' }}" style="border: 0px; border-bottom: 1px solid black;">
+                                    </div>
+
+                                    <div class="col-md-4 mt-4">
+                                        <label for="guia_fiscal">Guia Fiscal</label>
+                                        <input type="decimal" name="guia_fiscal" class="form-control tarifa-du-input" value="{{ $processo->du ? $processo->du->guia_fiscal : '0.00' }}" style="border: 0px; border-bottom: 1px solid black;">
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4 mt-4">
+                                        <label for="inerentes">Inerentes</label>
+                                        <input type="decimal" name="inerentes" class="form-control tarifa-du-input" value="{{ $processo->du ? $processo->du->inerentes : '0.00' }}" style="border: 0px; border-bottom: 1px solid black;">
+                                    </div>
+
+                                    <div class="col-md-4 mt-4">
+                                        <label for="despesas">Despesas</label>
+                                        <input type="decimal" name="despesas" class="form-control tarifa-du-input" value="{{ $processo->du ? $processo->du->despesas : '0.00' }}" style="border: 0px; border-bottom: 1px solid black;">
+                                    </div>
+
+                                    <div class="col-md-4 mt-4">
+                                        <label for="selos">Selos</label>
+                                        <input type="decimal" name="selos" class="form-control tarifa-du-input" value="{{ $processo->du ? $processo->du->selos : '0.00' }}" style="border: 0px; border-bottom: 1px solid black;">
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            
+                            <div class="tab-pane" id="messages" role="tabpanel" aria-labelledby="messages-tab">
+                                
+                            <div class="form-group mt-4 col-md-4">
+                                <label for="Situacao">Situação:</label>
+                                <select name="Situacao" class="form-control" style="border: 0px; border-bottom: 1px solid black;">
+                                    <option value="" selected>Selecionar</option>
+                                    <option value="em processamento" {{ $processo->Situacao == 'em processamento' ? 'selected' : '' }}>Em Processamento</option>
+                                    <option value="desembarcado" {{ $processo->Situacao == 'desembarcado' ? 'selected' : '' }}>Desembarcado</option>
+                                    <option value="retido" {{ $processo->Situacao == 'retido' ? 'selected' : '' }}>Retido</option>
+                                    <option value="concluido" {{ $processo->Situacao == 'concluido' ? 'selected' : '' }}>Concluído</option>
+                                    <!-- Adicione outras opções conforme necessário -->
+                                </select>
+                                @error('Situacao')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+
+                                <div class="row">
+                                    <div class="col-md-4 mt-4">
+                                        <label for="ep14">EP14</label>
+                                        <input type="decimal" name="ep14" class="form-control" value="{{$processo->portuaria ? $processo->portuaria->ep14 : '0.00'}}" style="border: 0px; border-bottom: 1px solid black;">
+                                    </div>
+                                    <div class="col-md-4 mt-4">
+                                        <label for="ep17">EP17</label>
+                                        <input type="decimal" name="ep17" class="form-control" value="{{$processo->portuaria ? $processo->portuaria->ep17 : '0.00'}}" style="border: 0px; border-bottom: 1px solid black;">
+                                    </div>
+                                    <div class="col-md-4 mt-4">
+                                        <label for="terminal">Terminal</label>
+                                        <input type="decimal" name="terminal" class="form-control" value="{{$processo->portuaria ? $processo->portuaria->terminal : '0.00'}}" style="border: 0px; border-bottom: 1px solid black;">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="tab-pane" id="settings" role="tabpanel" aria-labelledby="settings-tab">
+                                <div class="col-md-12 mt-4">
                                     
-                                    <hr>
-                                    <div class="row">
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label for="tipo_depachoID">Tipo de Despacho ID:</label>
-                                                <select name="tipo_depachoID" id="tipo_depachoID" class="form-control">
-                                                    <option value="">Selecionar</option>    
-                                                    @foreach($tipos as $tipo)
-                                                        <option value="{{$tipo->id}}" @if ($du && $du->tipo_depachoID == $tipo->id) selected @endif >{{$tipo->tipo}}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label for="NrOrdem">Número de Ordem:</label>
-                                                <x-input type="text" name="NrOrdem" id="NrOrdem" class="form-control"  required value="{{ isset($du) ? $du->setNrOrdemAttribute($du->NrOrdem) : '' }}"/>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="NavioAviaoType">Navio/Avião</label>
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <select name="NavioAviaoType" id="" class="form-control">
-                                                            <option value="navio">Navio</option>
-                                                            <option value="aviao">Avião</option>
-                                                        </select>
-                                                    </div>
-
-                                                    <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <x-input type="text" name="NavioAviao" id="NavioAviao" class="form-control" required value="{{ isset($du) ? $du->NavioAviao : '' }}"/>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                
-                                            </div>
-                                        </div>
+                                    <div id="drop-area" style="width: 100%; height: 200px; border: 2px dashed #ccc; text-align: center; padding: 20px;">
+                                        <h2>Arraste e solte documento aqui!</h2>
+                                        <p>ou</p>
+                                        <label for="file-input" style="cursor: pointer;" class="button-arquivo">Selecione um arquivo</label>
                                     </div>
-                                    <!-- /.row -->
-
-                                    <div class="row">
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label for="OrigemID">Origem</label>
-                                                <select name="OrigemID" id="OrigemID" class="form-control">
-                                                    <option value="">Selecionar</option>
-                                                    @foreach($origens as $origem)
-                                                        <option value="{{ $origem->id }}" @if ($du && $du->OrigemID == $origem->id) selected @endif>{{ $origem->pais }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label for="ProcDestino">Processo de Destino:</label>
-                                                <x-input type="text" name="ProcDestino" id="ProcDestino" class="form-control" required value="{{ isset($du) ? $du->ProcDestino : '' }}"/>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label for="CMarcaFiscal">CMarca Fiscal:</label>
-                                                <x-input type="text" name="CMarcaFiscal" id="CMarcaFiscal" class="form-control" required value="{{ isset($du) ? $du->CMarcaFiscal : '' }}"/>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label for="BLCPorte">BLC/Porte:</label>
-                                                <x-input type="text" name="BLCPorte" id="BLCPorte" class="form-control" required value="{{ isset($du) ? $du->BLCPorte : '' }}"/>
-                                            </div>
-                                        </div>
-                                    </div> 
-                                </div>
-
-                                <div class="tab-pane fade show " id="dar" role="tabpanel" aria-labelledby="dar-tab">
-                                    <br>
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <x-label for="NrReceita" value="{{__('Nº')}}" />
-                                            <x-input type="text" name="NrReceita" id="NrReceita" value="{{ isset($dar) ? $dar->NrReceita : '' }}" />
-                                            <x-input-error for="NrReceita" class="mt-2" />
-                                        </div>
-                                        <div class="col-md-4">
-                                            <x-label for="DataDar" value="{{__('Data')}}" />
-                                            <x-input type="date" name="DataDar" id="DataDar" value="{{ isset($dar) ? $dar->DataDar : '' }}" />
-                                            <x-input-error for="DataDar" class="mt-2" />
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <x-label for="Direitos" value="{{__('Direitos')}}" />
-                                            <x-input type="text" name="Direitos" value="{{ old('Direitos', isset($liquidacao) ? $liquidacao->Direitos : '0.00') }}" class="subtotal-input"/>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <x-label for="EmolumentosAduaneiros" value="{{__('Emolumentos Aduaneiros')}}" />
-                                            <x-input type="text" name="EmolumentosAduaneiros" value="{{ old('EmolumentosAduaneiros', isset($liquidacao) ? $liquidacao->EmolumentosAduaneiros : '0.00') }}" class="subtotal-input"/>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <x-label for="IvaAduaneiro" value="{{__('Iva Aduaneiro')}}" />
-                                            <x-input type="text" name="IvaAduaneiro" value="{{ old('IvaAduaneiro', isset($liquidacao) ? $liquidacao->IvaAduaneiro : '0.00') }}" class="subtotal-input"/>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <x-label for="Iec" value="{{__('IEC')}}" />
-                                            <x-input type="text" name="Iec" value="{{ old('Iec', isset($liquidacao) ? $liquidacao->Iec : '0.00') }}" class="subtotal-input"/>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <x-label for="ImpostoEstatistico" value="{{__('Imposto Estatístico')}}" />
-                                            <x-input type="text" name="ImpostoEstatistico" value="{{ old('ImpostoEstatistico', isset($liquidacao) ? $liquidacao->ImpostoEstatistico : '0.00') }}" class="subtotal-input"/>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <x-label for="JurosMora" value="{{__('Juros de Mora')}}" />
-                                            <x-input type="text" name="JurosMora" value="{{ old('JurosMora', isset($liquidacao) ? $liquidacao->JurosMora : '0.00') }}" class="subtotal-input"/>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <x-label for="Multas" value="{{__('Multas')}}" />
-                                            <x-input type="text" name="Multas" value="{{ old('Multas', isset($liquidacao) ? $liquidacao->Multas : '0.00') }}" class="subtotal-input"/>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <x-label for="SUBTOTAL" value="{{__('SUBTOTAL')}}" />
-                                            <x-input type="text" name="SUBTOTAL" value="{{ old('SUBTOTAL', isset($liquidacao) ? $liquidacao->SUBTOTAL : '0.00') }}" readonly id="subtotal"/>
-                                        </div>
-                                    </div>
+                                    <input type="file" id="file-input" multiple style="display: none;">
                                     
-                                    <br> <hr style="border-color:black;">
-                                    <span>Dados Portuários</span>
-                                    <br> <hr style="border-color:black;">
-
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <x-label for="EP14" value="{{__('EP14')}}" />
-                                            <x-input type="text" name="EP14" value="{{ old('EP14', isset($liquidacao) ? $liquidacao->EP14 : '0.00') }}" class="subtotal-input"/>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <x-label for="EP17" value="{{__('EP17')}}" />
-                                            <x-input type="text" name="EP17" value="{{ old('EP17', isset($liquidacao) ? $liquidacao->EP17 : '0.00') }}" class="subtotal-input"/>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <x-label for="Terminal" value="{{__('Terminal')}}" />
-                                            <x-input type="text" name="Terminal" value="{{ old('Terminal', isset($liquidacao) ? $liquidacao->Terminal : '0.00') }}" class="subtotal-input"/>
-                                        </div>
+                                    <div id="file-list" class="mt-4">
+                                        <p>Arquivos selecionados:</p>
+                                        <ul></ul>
                                     </div>
-                                </div>
-
-                                <div class="tab-pane fade show " id="cobrado" role="tabpanel" aria-labelledby="cobrado-tab">
                                     <br>
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <x-label for="licenca_ministerio" value="{{__('Licença Ministério')}}" />
-                                            <x-input type="text" name="licenca_ministerio" id="licenca_ministerio" value="{{ old('licenca_ministerio', isset($cobrado) ? $cobrado->licenca_ministerio : '0.00') }} " class="total-input"/> 
-                                        </div>
-                                        <div class="col-md-4">
-                                            <x-label for="CompanhiaNavegacao" value="{{__('Companhia Navegação')}}" />
-                                            <x-input type="text" name="CompanhiaNavegacao" id="CompanhiaNavegacao" value="{{ old('CompanhiaNavegacao', isset($cobrado) ? $cobrado->CompanhiaNavegacao : '0.00') }}" class="total-input"/>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <x-label for="ServicosViacao" value="{{__('Serviços Viação')}}" />
-                                            <x-input type="text" name="ServicosViacao" id="ServicosViacao" value="{{ old('ServicosViacao', isset($cobrado) ? $cobrado->ServicosViacao : '0.00') }}" class="total-input"/>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <x-label for="NrReceita" value="{{__('Taxa Aeroportuária')}}" />
-                                            <x-input type="text" name="TaxaAeroportuaria" id="TaxaAeroportuaria" value="{{ old('TaxaAeroportuaria', isset($cobrado) ? $cobrado->TaxaAeroportuaria : '0.00') }}" class="total-input"/>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <x-label for="NrReceita" value="{{__('Caução')}}" />
-                                            <x-input type="text" name="PreenchimentoDocEstatistico" id="PreenchimentoDocEstatistico" value="{{ old('PreenchimentoDocEstatistico', isset($cobrado) ? $cobrado->PreenchimentoDocEstatistico : '0.00') }}" class="total-input"/>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <x-label for="PortoBl" value="{{__('Legalização do Porto BL')}}" />
-                                            <x-input type="text" name="PortoBl" id="PortoBl" value="{{ old('PortoBl', isset($cobrado) ? $cobrado->PortoBl : '0.00') }}" class="total-input"/>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <x-label for="Frete" value="{{__('Frete')}}" />
-                                            <x-input type="text" name="Frete" id="Frete" value="{{ old('Frete', isset($cobrado) ? $cobrado->Frete : '0.00') }}" class="total-input"/>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <x-label for="AssistenciaCargaDescarga" value="{{__('Assistência a Carga e Descarga')}}" />
-                                            <x-input type="text" name="AssistenciaCargaDescarga" id="AssistenciaCargaDescarga" value="{{ old('AssistenciaCargaDescarga', isset($cobrado) ? $cobrado->AssistenciaCargaDescarga : '0.00') }}" class="total-input"/>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <x-label for="ServicosOrgaosOficiais" value="{{__('Serviços Órgãos Oficiais')}}" />
-                                            <x-input type="text" name="ServicosOrgaosOficiais" id="ServicosOrgaosOficiais" value="{{ old('ServicosOrgaosOficiais', isset($cobrado) ? $cobrado->ServicosOrgaosOficiais : '0.00') }}" class="total-input"/>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <x-label for="Deslocações" value="{{__('Deslocações')}}" />
-                                            <x-input type="text" name="Deslocacoes" id="Deslocacoes" value="{{ old('Deslocacoes', isset($cobrado) ? $cobrado->Deslocacoes : '0.00') }}" class="total-input"/>
-                                        </div>
-                                        
-                                        <div class="col-md-4">
-                                            <x-label for="GuiaAcompanhamentofiscal" value="{{__('Guia Acompanhamento Fiscal')}}" />
-                                            <x-input type="text" name="GuiaAcompanhamentofiscal" id="GuiaAcompanhamentofiscal" value="{{ old('GuiaAcompanhamentofiscal', isset($cobrado) ? $cobrado->GuiaAcompanhamentofiscal : '0.00') }}" class="total-input"/>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <x-label for="Inerentes" value="{{__('Inerentes')}}" />
-                                            <x-input type="text" name="Inerentes" id="Inerentes" value="{{ old('Inerentes', isset($cobrado) ? $cobrado->Inerentes : '0.00') }}" class="total-input"/>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <x-label for="DespesaCarregamento" value="{{__('Despesas de Carregamento')}}" /> 
-                                                <x-input type="text" name="DespesaCarregamento" id="DespesaCarregamento" value="{{ old('DespesaCarregamento', isset($cobrado) ? $cobrado->DespesaCarregamento : '0.00') }}" class="total-input"/>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <x-label for="SelosImpressosDespacho" value="{{__('Sêlos e Impressos de Despacho')}}" /> 
-                                                <x-input type="text" name="SelosImpressosDespacho" id="SelosImpressosDespacho" value="{{ old('SelosImpressosDespacho', isset($cobrado) ? $cobrado->SelosImpressosDespacho : '0.00') }}" class="total-input"/>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <x-label for="Honorarios" value="{{__('Honorários')}}" /> 
-                                                <x-input type="text" name="Honorarios" id="Honorarios" value="{{ old('Honorarios', isset($cobrado) ? $cobrado->Honorarios : '0.00') }}" class="total-input"/>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="tab-pane fade show active" id="ficheiro" role="tabpanel" aria-labelledby="ficheiro-tab">
-                                    <br>
-                                    <div class="col-md-12">
-                                        
-                                        <div id="drop-area" style="width: 100%; height: 200px; border: 2px dashed #ccc; text-align: center; padding: 20px;">
-                                            <h2>Arraste e solte documento aqui!</h2>
-                                            <p>ou</p>
-                                            <label for="file-input" style="cursor: pointer;" class="button-arquivo">Selecione um arquivo</label>
-                                        </div>
-                                        <input type="file" id="file-input" multiple style="display: none;">
-                                        
-                                        <div id="file-list">
-                                            <p>Arquivos selecionados:</p>
-                                            <ul></ul>
-                                        </div>
-                                        <br>
-                                    </div>
-
                                 </div>
                             </div>
                         </div>
+
+
+
                     </div>
                 </div>
             </div>
@@ -458,7 +421,7 @@
                         </div>
                         <div class="form-group">
                             <label for="DataEntrada">Data de Entrada:</label>
-                            <x-input type="date" name="DataEntrada" id="DataEntrada" class="form-control" required value="{{ isset($du) ? $du->DataEntrada : '' }}"/>
+                            <x-input type="date" class="form-control" value="{{ isset($du) ? $du->DataEntrada : '' }}"/>
                         </div>
 
                         <ul>
@@ -471,7 +434,6 @@
                             <li>
                                 <strong>Total Geral:</strong> <x-input type="text" name="TOTALGERAL" id="TOTALGERAL" value="{{ old('TOTALGERAL', isset($cobrado) ? $cobrado->TOTALGERAL : '0.00') }}" readonly class="total"/>
                             </li>
-
                             <li>
                                 <strong>Extenso:</strong> <x-input type="text" name="Extenso" id="Extenso" value="{{ old('Extenso', isset($cobrado) ? $cobrado->Extenso : '') }}"/>
                             </li>
@@ -483,256 +445,157 @@
     </form>
 
     <script>
-        // Adicionar nova linha de mercadoria
-        $(document).on('click', '.add-row', function (e) {
-            e.preventDefault();
-            var newRow = `
-                <tr>
-                    <td><input type="text" name="mercadorias[marcas][]" class="form-control"></td>
-                    <td><input type="text" name="mercadorias[numero][]" class="form-control"></td>
-                    <td><input type="text" name="mercadorias[quantidade][]" class="form-control"></td>
-                    <td><input type="text" name="mercadorias[qualificacaoID][]" class="form-control"></td>
-                    <td><input type="text" name="mercadorias[designacao][]" class="form-control"></td>
-                    <td><input type="text" name="mercadorias[peso][]" class="form-control"></td>
-                    <!-- Outros campos das mercadorias -->
-                    <td>
-                        <a href="#" class="btn btn-danger remove-row" data-toggle="tooltip" data-placement="top" title="Remover Mercadoria">
-                            <i class="fas fa-trash"></i>
-                        </a>
-                    </td>
-                </tr>
-            `;
-            $('#mercadorias-table tbody').append(newRow);
+        // Função para atualizar o subtotal
+        function updateSubtotal() {
+            var subtotal = 0;
+            var inputs = document.getElementsByClassName('subtotal-input');
+            
+            // Somar os valores dos inputs
+            for (var i = 0; i < inputs.length; i++) {
+                var value = parseFloat(inputs[i].value.replace(',', '.')) || 0;
+                subtotal += value;
+            }
+            
+            // Atualizar o valor do campo SUBTOTAL
+            document.getElementById('subtotal').value = subtotal.toFixed(2).replace('.', ',');
+        }
+
+        function updateTotal() {
+            var total = 0;
+            var inputsL = document.getElementsByClassName('total-input');
+
+            // Somar os valores dos inputsL
+            total += parseFloat(document.getElementById('subtotal').value.replace(',', '.'));
+
+            for (var i = 0; i < inputsL.length; i++) {
+                var value = parseFloat(inputsL[i].value.replace(',', '.')) || 0;
+                total += value;
+            }
+
+            // Atualizar o valor do campo TOTALGERAL
+            document.getElementById('TOTALGERAL').value = total.toFixed(2).replace('.', ',');
+        }
+        
+        // Chamar a função ao carregar a página e sempre que houver alteração nos inputs
+        window.addEventListener('load', function() {
+            updateSubtotal();
+            updateTotal();
         });
 
-        // Remover linha de mercadoria
-        $(document).on('click', '.remove-row', function (e) {
-            e.preventDefault();
-            $(this).closest('tr').remove();
+        Array.from(document.getElementsByClassName('subtotal-input')).forEach(function(input) {
+            input.addEventListener('input', updateSubtotal);
+        });
+
+        Array.from(document.getElementsByClassName('total-input')).forEach(function(input) {
+            input.addEventListener('input', updateTotal);
         });
     </script>
 
     <script>
-        function adicionarMercadoria() {
-            // Função para adicionar uma nova linha na tabela de mercadorias
+        const dropArea = document.getElementById('drop-area');
+        const fileList = document.querySelector('#file-list ul');
 
-            var tableBody = document.getElementById('mercadorias-table').getElementsByTagName('tbody')[0];
-
-            var row = document.createElement('tr');
-
-            var createTableCell = function(content) {
-            var cell = document.createElement('td');
-            cell.innerHTML = content;
-            return cell;
-            };
-
-            var createTextInput = function(name, required = true) {
-            return '<x-input type="text" class="form-control" name="' + name + '" ' + (required ? 'required' : '') + ' class = "form-control" />';
-            };
-
-            var createNumberInput = function(name, required = true) {
-            return '<x-input type="number" class="form-control" name="' + name + '" ' + (required ? 'required' : '') + ' />';
-            };
-
-            var createSelectInput = function(name, options, required = true) {
-            var select = '<select name="' + name + '" ' + (required ? 'required' : '') + ' class = "form-control">';
-            options.forEach(function(option) {
-                select += '<option value="' + option.value + '">' + option.label + '</option>';
-            });
-            select += '</select>';
-            return select;
-            };
-
-            var marcasCell = createTableCell(createTextInput('mercadorias[marcas][]'));
-            var numeroCell = createTableCell(createNumberInput('mercadorias[numero][]'));
-            var quantidadeCell = createTableCell(createNumberInput('mercadorias[quantidade][]'));
-
-            // Exemplo de opções para o campo 'qualificação'
-            var qualificacaoOptions = 
-            [
-                { value: '', label: 'Selecionar' },
-                @foreach($qualificacao as $qualifi)
-                { 
-                    value: '{{$qualifi->Id}}', label: '{{$qualifi->Cod}}' 
-                },
-                @endforeach
-            ];
-            var qualidadeCell = createTableCell(createSelectInput('mercadorias[qualificaçãoID][]', qualificacaoOptions));
-
-            var designacaoCell = createTableCell(createTextInput('mercadorias[designacao][]'));
-            var pesoCell = createTableCell(createNumberInput('mercadorias[peso][]'));
-
-            var trash = `<a href="#" class="btn btn-danger remove-row" data-toggle="tooltip" data-placement="top" title="Remover Mercadoria">
-                            <i class="fas fa-trash"></i>
-                        </a>`;
-
-            // Adicione outros campos necessários
-
-            row.appendChild(marcasCell);
-            row.appendChild(numeroCell);
-            row.appendChild(quantidadeCell);
-            row.appendChild(qualidadeCell);
-            row.appendChild(designacaoCell);
-            row.appendChild(pesoCell);
-            row.appendChild(trash);
-
-            tableBody.appendChild(row);
-
-        }
-    </script>
-
-<script>
-    // Função para atualizar o subtotal
-    function updateSubtotal() {
-        var subtotal = 0;
-        var inputs = document.getElementsByClassName('subtotal-input');
-        
-        // Somar os valores dos inputs
-        for (var i = 0; i < inputs.length; i++) {
-            var value = parseFloat(inputs[i].value.replace(',', '.')) || 0;
-            subtotal += value;
-        }
-        
-        // Atualizar o valor do campo SUBTOTAL
-        document.getElementById('subtotal').value = subtotal.toFixed(2).replace('.', ',');
-    }
-
-    function updateTotal() {
-        var total = 0;
-        var inputsL = document.getElementsByClassName('total-input');
-
-        // Somar os valores dos inputsL
-        total += parseFloat(document.getElementById('subtotal').value.replace(',', '.'));
-
-        for (var i = 0; i < inputsL.length; i++) {
-            var value = parseFloat(inputsL[i].value.replace(',', '.')) || 0;
-            total += value;
-        }
-
-        // Atualizar o valor do campo TOTALGERAL
-        document.getElementById('TOTALGERAL').value = total.toFixed(2).replace('.', ',');
-    }
-    
-    // Chamar a função ao carregar a página e sempre que houver alteração nos inputs
-    window.addEventListener('load', function() {
-        updateSubtotal();
-        updateTotal();
-    });
-
-    Array.from(document.getElementsByClassName('subtotal-input')).forEach(function(input) {
-        input.addEventListener('input', updateSubtotal);
-    });
-
-    Array.from(document.getElementsByClassName('total-input')).forEach(function(input) {
-        input.addEventListener('input', updateTotal);
-    });
-</script>
-
-<script>
-    const dropArea = document.getElementById('drop-area');
-    const fileList = document.querySelector('#file-list ul');
-
-    // Prevenir comportamento padrão de arrastar e soltar
-    dropArea.addEventListener('dragenter', (e) => {
-        e.preventDefault();
-        dropArea.style.border = '2px dashed #aaa';
-    });
-
-    dropArea.addEventListener('dragover', (e) => {
-        e.preventDefault();
-    });
-
-    dropArea.addEventListener('dragleave', () => {
-        dropArea.style.border = '2px dashed #ccc';
-    });
-
-    dropArea.addEventListener('drop', (e) => {
-        e.preventDefault();
-        dropArea.style.border = '2px dashed #ccc';
-
-        const files = e.dataTransfer.files;
-        updateFileList(files);
-    });
-
-    // Validar o tipo de arquivo
-    function validateFileType(file) {
-        const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'];
-        return allowedTypes.includes(file.type);
-    }
-
-    // Atualizar a lista de arquivos selecionados
-    function updateFileList(files) {
-        fileList.innerHTML = '';
-        for (const file of files) {
-            if (validateFileType(file) && validateFileSize(file)) {
-                const li = createFileListItem(file);
-                fileList.appendChild(li);
-            }
-        }
-    }
-
-    // Validar o tamanho do arquivo
-    function validateFileSize(file) {
-        const maxSizeMB = 5;
-        const maxSizeBytes = maxSizeMB * 1024 * 1024;
-        if (file.size <= maxSizeBytes) {
-            return true;
-        } else {
-            alert('Tamanho do arquivo excede o limite de ' + maxSizeMB + 'MB.');
-            return false;
-        }
-    }
-
-    // Criar item da lista de arquivos
-    function createFileListItem(file) {
-        const li = document.createElement('li');
-        li.textContent = file.name;
-
-        const removeButton = document.createElement('button');
-        removeButton.textContent = 'Remover';
-        removeButton.addEventListener('click', () => {
-            li.remove();
+        // Prevenir comportamento padrão de arrastar e soltar
+        dropArea.addEventListener('dragenter', (e) => {
+            e.preventDefault();
+            dropArea.style.border = '2px dashed #aaa';
         });
 
-        li.appendChild(removeButton);
+        dropArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+        });
 
-        return li;
-    }
+        dropArea.addEventListener('dragleave', () => {
+            dropArea.style.border = '2px dashed #ccc';
+        });
 
-    // Lidar com o evento de arrastar sobre a área de soltar
-    dropArea.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        dropArea.classList.add('active');
-    });
+        dropArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropArea.style.border = '2px dashed #ccc';
 
-    // Lidar com o evento de sair da área de soltar
-    dropArea.addEventListener('dragleave', () => {
-        dropArea.classList.remove('active');
-    });
+            const files = e.dataTransfer.files;
+            updateFileList(files);
+        });
 
-    // Lidar com o evento de soltar na área de soltar
-    dropArea.addEventListener('drop', (e) => {
-        e.preventDefault();
-        dropArea.classList.remove('active');
+        // Validar o tipo de arquivo
+        function validateFileType(file) {
+            const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+            return allowedTypes.includes(file.type);
+        }
 
-        const files = e.dataTransfer.files;
-        updateFileList(files);
-    });
+        // Atualizar a lista de arquivos selecionados
+        function updateFileList(files) {
+            fileList.innerHTML = '';
+            for (const file of files) {
+                if (validateFileType(file) && validateFileSize(file)) {
+                    const li = createFileListItem(file);
+                    fileList.appendChild(li);
+                }
+            }
+        }
+
+        // Validar o tamanho do arquivo
+        function validateFileSize(file) {
+            const maxSizeMB = 5;
+            const maxSizeBytes = maxSizeMB * 1024 * 1024;
+            if (file.size <= maxSizeBytes) {
+                return true;
+            } else {
+                alert('Tamanho do arquivo excede o limite de ' + maxSizeMB + 'MB.');
+                return false;
+            }
+        }
+
+        // Criar item da lista de arquivos
+        function createFileListItem(file) {
+            const li = document.createElement('li');
+            li.textContent = file.name;
+
+            const removeButton = document.createElement('button');
+            removeButton.textContent = 'Remover';
+            removeButton.addEventListener('click', () => {
+                li.remove();
+            });
+
+            li.appendChild(removeButton);
+
+            return li;
+        }
+
+        // Lidar com o evento de arrastar sobre a área de soltar
+        dropArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropArea.classList.add('active');
+        });
+
+        // Lidar com o evento de sair da área de soltar
+        dropArea.addEventListener('dragleave', () => {
+            dropArea.classList.remove('active');
+        });
+
+        // Lidar com o evento de soltar na área de soltar
+        dropArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropArea.classList.remove('active');
+
+            const files = e.dataTransfer.files;
+            updateFileList(files);
+        });
 
 
-    // Lidar com a seleção de arquivo usando o input de arquivo
-    const fileInput = document.getElementById('file-input');
-    fileInput.addEventListener('change', (e) => {
-        const files = e.target.files;
-        updateFileList(files);
-    });
+        // Lidar com a seleção de arquivo usando o input de arquivo
+        const fileInput = document.getElementById('file-input');
+        fileInput.addEventListener('change', (e) => {
+            const files = e.target.files;
+            updateFileList(files);
+        });
 
-    // Permitir reordenar arquivos usando arrastar e soltar
-    new Sortable(fileList, {
-        animation: 150,
-        ghostClass: 'sortable-ghost'
-    });
-</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+        // Permitir reordenar arquivos usando arrastar e soltar
+        new Sortable(fileList, {
+            animation: 150,
+            ghostClass: 'sortable-ghost'
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
 
 </x-app-layout>

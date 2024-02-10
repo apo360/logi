@@ -9,65 +9,46 @@ class Mercadoria extends Model
 {
     use HasFactory;
 
-    protected $table = 'mercadoria';
+    protected $table = 'Mercadorias';
 
     protected $fillable = [
-        'MercadoriaID',
-        'ProcessoID',
-        'marcas',
-        'numero',
-        'quantidade',
-        'qualificacaoID',
-        'designacao',
-        'peso'
+        'Fk_Importacao',
+        'Descricao',
+        'NCM_HS',
+        'NCM_HS_Numero',
+        'Quantidade',
+        'Qualificacao',
+        'Unidade',
+        'Peso',
+        // Adicione outros campos fillable conforme necessário
     ];
 
-    public function processo()
+    // Relacionamento com a tabela Importacao
+    public function importacao()
     {
-        return $this->belongsTo(Processo::class, 'ProcessoID');
+        return $this->belongsTo(Importacao::class, 'Fk_Importacao', 'Id');
     }
 
-    public function qualificacao()
-    {
-        return $this->belongsTo(Qualificacao::class, 'qualificacaoID');
-    }
 
     // Outros relacionamentos e métodos necessários
 
     public function getTotalPeso()
     {
         // Retorna o peso total da mercadoria considerando a quantidade
-        return $this->peso * $this->quantidade;
+        return $this->Peso * $this->quantidade;
     }
 
     public function getMarcaNumero()
     {
         // Retorna uma string com a marca e o número da mercadoria
-        return $this->marcas . ' - ' . $this->numero;
+        return $this->NCM_HS . ' - ' . $this->NCM_HS_Numero;
     }
 
-    public function isQualificada()
-    {
-        // Verifica se a mercadoria possui uma qualificação associada
-        return $this->qualificacaoID !== null;
-    }
 
     public function getQualificacaoDescricao()
     {
         // Retorna a descrição da qualificação da mercadoria, se existir
-        return $this->qualificacao ? $this->qualificacao->descricao : null;
+        return $this->Qualificacao;
     }
 
-    public function getNomeCliente()
-    {
-        // Retorna o nome do cliente associado ao processo da mercadoria
-        return $this->processo->cliente->nome;
-    }
-
-    public function updateQuantidade($novaQuantidade)
-    {
-        // Atualiza a quantidade da mercadoria
-        $this->quantidade = $novaQuantidade;
-        $this->save();
-    }
 }

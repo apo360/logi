@@ -23,11 +23,11 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
+    // No modelo User
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+        'name', 'email', 'password', 'password_change_required', 'password_expired', 'FK_Empresa'
     ];
+
 
     /**
      * The attributes that should be hidden for serialization.
@@ -58,4 +58,18 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
+
+    public function is_new_user()
+    {
+        return $this->created_at->diffInDays(now()) < 7;
+    }
+
+    /**
+     * Relacionamento com a empresa
+     */
+    public function empresa()
+    {
+        return $this->belongsTo(Empresa::class, 'FK_Empresa');
+    }
+
 }

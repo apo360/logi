@@ -11,36 +11,6 @@ use Illuminate\Support\Facades\Log;
 
 class MercadoriaController extends Controller
 {
-    
-    /**
-     * Tratamento dos erros que podem ocorrer dentro do código
-     */
-    private function handleDatabaseErrors(\Throwable $e)
-    {
-        if ($e instanceof QueryException) {
-            // Log do erro de banco de dados
-            Log::error('Erro de banco de dados: ' . $e->getMessage());
-
-            // Exibir mensagem de erro para o usuário
-            return redirect()->back()->with('error', 'Ocorreu um erro de banco de dados. Por favor, tente novamente mais tarde.');
-
-            // OU
-
-            // Redirecionar para uma página de erro personalizada
-            return redirect()->route('error.page');
-        } else {
-            // Log de outros erros
-            Log::error('Erro não tratado: ' . $e->getMessage());
-
-            // Exibir mensagem de erro para o usuário
-            return redirect()->back()->with('error', 'Ocorreu um erro. Por favor, tente novamente mais tarde.');
-
-            // OU
-
-            // Redirecionar para uma página de erro personalizada
-            return redirect()->route('error.page');
-        }
-    }
 
     /**
      * Display a listing of the resource.
@@ -65,24 +35,19 @@ class MercadoriaController extends Controller
     {
         // Valide os dados das mercadorias
 
-        // Inicia uma transação para garantir a integridade dos dados
-        DB::beginTransaction();
-
-        $mercadoriasData = $request->input('mercadorias');
-
         // Obtém os dados das mercadorias do formulário
         $mercadoriasData = $request->input('mercadorias');
-
-        // Valide os dados das mercadorias, se necessário
         
         // Percorra os dados das mercadorias e crie as instâncias de mercadoria
-        foreach ($mercadoriasData['marcas'] as $index => $marcas) {
-            $marca = $mercadoriasData['marcas'][$index];
-            $numero = $mercadoriasData['numero'][$index];
-            $quantidade = $mercadoriasData['quantidade'][$index];
-            $qualificacaoID = $mercadoriasData['qualificaçãoID'][$index];
-            $designacao = $mercadoriasData['designacao'][$index];
-            $peso = $mercadoriasData['peso'][$index];
+        foreach ($mercadoriasData['NCM_HS'] as $index => $marcas) {
+            $designacao = $mercadoriasData['Descricao'][$index];
+            $marca = $mercadoriasData['NCM_HS'][$index];
+            $numero = $mercadoriasData['NCM_HS_Numero'][$index];
+            $quantidade = $mercadoriasData['Quantidade'][$index];
+            $qualificacaoID = $mercadoriasData['Qualificacao'][$index];
+            
+            $peso = $mercadoriasData['Unidade'][$index];
+            $peso = $mercadoriasData['Peso'][$index];
 
             // Chame o procedimento InserirMercadoria usando a função DB::statement
             DB::statement("CALL InserirMercadoria('$request->NrProcesso', '$marca', $numero, $quantidade, $qualificacaoID, '$designacao', $peso)");

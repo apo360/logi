@@ -9,6 +9,7 @@ class ProductExemptionReason extends Model
 {
     use HasFactory;
 
+    protected $table = 'ProductExemptionReasons';
     protected $fillable = [
         'code',
         'name',

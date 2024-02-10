@@ -19,7 +19,7 @@ class DatabaseErrorHandler
             // OU
 
             // Redirecionar para uma página de erro personalizada
-            return redirect()->route('error.page');
+            //return redirect()->route('error.page');
         } else {
             // Log de outros erros
             Log::error('Erro não tratado: ' . $e->getMessage());
@@ -30,7 +30,7 @@ class DatabaseErrorHandler
             // OU
 
             // Redirecionar para uma página de erro personalizada
-            return redirect()->route('error.page');
+            //return redirect()->route('error.page');
         }
     }
 }

@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('modulos', function (Blueprint $table) {
+        Schema::create('modules', function (Blueprint $table) {
             $table->id();
-            $table->string('nome', 100);
-            $table->string('sigla', 50);
-            $table->integer('posicao');
-            $table->tinyInteger('activado')->default(0);
+            $table->unsignedBigInteger('parent_id')->nullable();
+            $table->string('module_name');
+            $table->text('description')->nullable();
+            $table->decimal('price', 10, 2);
             $table->timestamps();
         });
     }

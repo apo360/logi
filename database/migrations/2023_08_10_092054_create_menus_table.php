@@ -14,15 +14,18 @@ return new class extends Migration
         Schema::create('menus', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('parent_id')->nullable();
-            $table->string('title', 255);
-            $table->string('slug', 255);
-            $table->integer('ordem');
-            $table->string('rota', 255)->nullable();
-            $table->string('icone', 255);
-            $table->unsignedBigInteger('modulo_id');
-            $table->tinyInteger('activo')->default(1);
+            $table->unsignedBigInteger('module_id')->nullable();
+            $table->string('menu_name');
+            $table->string('slug');
+            $table->integer('order_priority');
+            $table->string('route');
+            $table->string('icon');
+            $table->enum('position', ['HORIZONTAL', 'VERTICAL']);
+            $table->text('description')->nullable();
             $table->timestamps();
+
             $table->foreign('parent_id')->references('id')->on('menus');
+            $table->foreign('module_id')->references('id')->on('modules');
         });
     }
 

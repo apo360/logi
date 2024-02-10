@@ -13,11 +13,11 @@ class ModulosSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('modulos')->insert([
-            ['nome' => 'Processos Aduaneiros', 'sigla' => 'ProcA', 'posicao' => 1, 'activado' => 1],
-            ['nome' => 'Faturação', 'sigla' => 'FT', 'posicao' => 2, 'activado' => 0],
-            ['nome' => 'Recursos Humanos', 'sigla' => 'RH', 'posicao' => 3, 'activado' => 0],
-            ['nome' => 'Contabilidade', 'sigla' => 'C', 'posicao' => 4, 'activado' => 0],
+        DB::table('modules')->insert([
+            ['module_name' => 'Processos Aduaneiros', 'description' => 'Gerenciamento de processos aduaneiros', 'price' => 15000.00],
+            ['module_name' => 'Faturação', 'description' => 'Descrição do Módulo de Faturação', 'price' => 20000.00],
+            ['module_name' => 'Recursos Humanos', 'description' => 'Descrição do Módulo de Recursos Humanos', 'price' => 30000.00],
+            ['module_name' => 'Contabilidade', 'description' => 'Descrição do Módulo de Contabilidade', 'price' => 0.00],
         ]);
     }
 }

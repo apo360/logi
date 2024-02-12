@@ -16,10 +16,10 @@ class Configuracoes
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $cambioAtual = new ExchangeRateService();
+        // $cambioAtual = new ExchangeRateService();
 
         // Compartilhe a configuração com todas as views
-        view()->share('Cambio', $cambioAtual->getExchangeRates());
+        // view()->share('Cambio', $cambioAtual->getExchangeRates());
 
         return $next($request);
     }

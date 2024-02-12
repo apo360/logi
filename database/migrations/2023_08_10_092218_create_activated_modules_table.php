@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('activated_modules', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('company_id');
+            $table->Integer('company_id');
             $table->unsignedBigInteger('module_id');
             $table->timestamp('activation_date')->default(now());
             $table->timestamps();

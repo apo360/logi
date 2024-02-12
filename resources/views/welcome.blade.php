@@ -109,24 +109,6 @@
                 <br>
                 <span> 30 Dias Gratuitos Sem Compromisso</span>
 
-                <p>Taxa de Câmbios</p>
-                <!-- <p><span>Base: {{$Cambio['base']}}</span></p>
-                <span>AOA: {{$Cambio['rates']['AOA']}}</span>
-                <span>EUR: {{$Cambio['rates']['EUR']}}</span>
-                
-            </div>
-
-            <h3>Recalcular</h3>
-             Sua visão Laravel (.blade.php)
-
-            <p>Taxa de Câmbios</p>
-            <p><span>Base: AOA</span></p>
-
-
-            <span>USD: {{ number_format($Cambio['rates']['USD'] * $Cambio['rates']['AOA'], 3) }}</span>
-            <span>EUR: {{ number_format($Cambio['rates']['EUR'] * $Cambio['rates']['USD']*1000, 3) }}</span>
- -->
-
             <div class="section_modulo">
                 Processos
                 Recursos Humanos

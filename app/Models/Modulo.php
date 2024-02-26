@@ -9,10 +9,10 @@ class Modulo extends Model
 {
     use HasFactory;
 
-    protected $table = 'modulos';
+    protected $table = 'modules';
     
     protected $fillable = [
-        'nome', 'sigla', 'posicao', 'activado',
+        'parent_id', 'module_name', 'description', 'price',
     ];
     
     public function menus()

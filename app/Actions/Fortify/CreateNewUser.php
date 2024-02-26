@@ -29,7 +29,7 @@ class CreateNewUser implements CreatesNewUsers
             'email' => $input['email'],
             'password' => Hash::make($input['password']),
             'password_change_required' => true, // Marque como false para indicar que a senha foi alterada
-            'password_expired' => now()->addDays(0), // Defina a nova data de expiração, por exemplo, 30 dias a partir de agora
+            'password_expired' => now()->addDays(30), // Defina a nova data de expiração, por exemplo, 30 dias a partir de agora
             'Fk_Role' => 1
             
         ]);

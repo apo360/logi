@@ -1,4 +1,18 @@
 <x-app-layout>
+    <x-validation-errors class="mb-4" />
+
+    @if(session('success'))
+        <div>
+            <div class="font-medium text-green-600">{{ __('Sucesso!') }}</div>
+
+            <p class="mt-3 text-sm text-green-600">
+                {{ session('success') }}
+            </p>
+        </div>
+    @endif
+
+    
+
     <form action="{{ route('usuarios.store') }}" method="POST">
         @csrf
 
@@ -16,7 +30,7 @@
         <label for="role">Função:</label>
         <select name="role" required>
             @foreach($roles as $role)
-                <option value="{{ $role->id }}">{{ $role->role_name }}</option>
+                <option value="{{ $role->role_id }}">{{ $role->role_name }}</option>
             @endforeach
         </select>
 

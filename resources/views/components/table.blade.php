@@ -36,7 +36,7 @@
     @endsection
 @endonce
 
-<table id="example1" class="table table-hover table-dark">
+<table id="example1" class="table table-sm table-hover table-dark">
     <thead>
         @foreach ($tableData['headers'] as $header)
             <th scope = "col" class="px-6 py-6 text-left text-xs font-medium uppercase tracking-wider">{{ $header }}</th>

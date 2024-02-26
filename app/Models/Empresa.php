@@ -25,4 +25,10 @@ class Empresa extends Model
         return $this->belongsTo(User::class);
     }
 
+    // Método para verificar se os dados obrigatórios foram preenchidos
+    public function dadosPreenchidos()
+    {
+        return !empty($this->Empresa) && !empty($this->NIF);
+    }
+
 }

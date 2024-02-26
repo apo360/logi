@@ -18,6 +18,7 @@ use App\Http\Controllers\UserController;
 use App\Models\Funcionario;
 use Illuminate\Support\Facades\Route;
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -28,6 +29,7 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
 
 Route::get('/', function () { return view('welcome'); });
 
@@ -42,9 +44,9 @@ Route::post('/confirmar', [AuthController::class, 'verificar'])->name('consultar
 
 
 
-Route::middleware([ 'auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function () {
+Route::middleware([ 'auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function () {  
 
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard')->middleware('checkEmpresa');
 
     Route::resources(
         [ 
@@ -59,6 +61,10 @@ Route::middleware([ 'auth:sanctum', config('jetstream.auth_session'), 'verified'
             'empresa' => EmpresaController::class, //
         ]
     );
+
+    // Rotas adicionais para empresa
+    Route::get('/empresa/subscricao', [EmpresaController::class, 'SubscricaoModulo'])->name('empresas.subscricao')->middleware('checkEmpresa');
+    Route::post('/empresa/processar-subscricao', [EmpresaController::class, 'processarSubscricao'])->name('processar-subscricao')->middleware('checkEmpresa');
     
     Route::post('/password/update', [UserController::class, 'updatePassword'])->name('password.update');
 
@@ -67,7 +73,7 @@ Route::middleware([ 'auth:sanctum', config('jetstream.auth_session'), 'verified'
     Route::post('/produto/grupo/insert', [ProdutoController::class, 'InsertGrupo'])->name('insert.grupo.produto');
 
     Route::get('LivroPonto', [FaltasController::class, 'LivroPontoOpen'])->name('ponto');
-    
+
     Route::get('/MapaFerias&Licença', [FaltasController::class,'MapaFL'])->name('ferias.mapa');
     // Get Processo By CustomerID and Status
 
@@ -86,12 +92,10 @@ Route::middleware([ 'auth:sanctum', config('jetstream.auth_session'), 'verified'
     
     # Route for Print Customer
     Route::post('print-customer/{customer}', [CustomerController::class, 'print'])->name('customers.print');
-
     Route::get('/clientes/ultimo', [CustomerController::class, 'obterUltimoClienteAdicionado'])->name('clientes.obter_ultimo');
 
     # Route for Print Processos
     Route::get('print-processo/{processo}', [ProcessoController::class, 'print'])->name('processos.print');
-
     # Route for Print Processos
     Route::get('factura-processo/{processo}', [ProcessoController::class, 'print'])->name('processos.factura');
 

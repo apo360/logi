@@ -79,7 +79,7 @@
                             {{ __('Dados da Empresa') }}
                         </x-dropdown-link>
 
-                        <x-dropdown-link href="{{ route('profile.show') }}">
+                        <x-dropdown-link href="{{ route('empresas.subscricao') }}">
                             {{ __('Subscrição') }}
                         </x-dropdown-link>
 

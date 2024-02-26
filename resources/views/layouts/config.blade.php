@@ -27,6 +27,11 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
         <!-- Theme style -->
 	    <link rel="stylesheet" href="{{ asset('dist/css/adminlte.min.css') }}">
+         <!-- Select2 -->
+        <link rel="stylesheet" href="{{ asset('plugins/select2/css/select2.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
+        <!-- Bootstrap4 Duallistbox -->
+        <link rel="stylesheet" href="{{ asset('plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css') }}">
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -83,10 +88,26 @@
 		<script src="{{ asset('dist/js/adminlte.min.js') }}"></script>
 		<!-- AdminLTE for demo purposes -->
 		<script src="{{ asset('dist/js/demo.js') }}"></script>
+        <!-- Select2 -->
+        <script src="{{ asset('plugins/select2/js/select2.full.min.js') }}"></script>
+        <!-- Bootstrap4 Duallistbox -->
+        <script src="{{ asset('plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js') }}"></script>
         {{-- Livewire --}}
 
         @stack('modals')
 
         @livewireScripts
+
+        <script>
+            $(function () {
+                //Initialize Select2 Elements
+                $('.select2').select2()
+
+                //Initialize Select2 Elements
+                $('.select2bs4').select2({
+                theme: 'bootstrap4'
+                })
+            })
+        </script>
     </body>
 </html>

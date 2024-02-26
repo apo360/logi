@@ -25,7 +25,7 @@ class User extends Authenticatable
      */
     // No modelo User
     protected $fillable = [
-        'name', 'email', 'password', 'password_change_required', 'password_expired', 'FK_Empresa'
+        'name', 'email', 'password', 'password_change_required', 'password_expired', 'FK_Empresa', 'Fk_Role'
     ];
 
 
@@ -64,12 +64,36 @@ class User extends Authenticatable
         return $this->created_at->diffInDays(now()) < 7;
     }
 
+    // Relacionamento com a função do usuário
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'Fk_Role', 'role_id');
+    }
+
+    // Método para verificar se o usuário tem a função de admin
+    public function isAdmin()
+    {
+        return $this->role->role_name === 'Administrator'; // Verifica se o nome da role é 'admin'
+    }
+
+    // Método para verificar se o usuário tem a função de admin
+    public function isNormal()
+    {
+        return $this->role->role_name === 'Normal'; // Verifica se o nome da role é 'Normal'
+    }
+
     /**
      * Relacionamento com a empresa
      */
     public function empresa()
     {
         return $this->belongsTo(Empresa::class, 'FK_Empresa');
+    }
+
+    // Define the permissions relationship through roles
+    public function permissions()
+    {
+        return $this->role->permissions();
     }
 
 }

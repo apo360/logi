@@ -151,29 +151,3 @@
         </p>
     </div>
 </div>
-
-<!-- Verificar se os dados da empresa estão preenchidos para exibir o modal -->
-@if(auth()->user()->is_new_user() && !auth()->user()->empresa)
-    <!-- Modal para preenchimento dos dados da empresa -->
-    <div class="modal fade" id="preencherDadosModal" tabindex="-1" role="dialog" aria-labelledby="preencherDadosModalLabel" aria-hidden="true">
-        <!-- Conteúdo do modal com carrossel -->
-        <div class="modal-dialog  modal-lg modal-dialog-aside" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="preencherDadosModalLabel">Preencher Dados da Empresa</h5>
-                    <!-- Botão de fechar o modal -->
-                </div>
-                <div class="modal-body">
-                    <p>Seus dados da empresa não estão preenchidos. Por favor, preencha os dados <a href="{{ route('empresa.create') }}">aqui</a>.</p>
-                </div>
-            </div>
-        </div>    
-    </div>
-
-    <!-- Inclua o script apenas se os dados da empresa não estiverem preenchidos -->
-    <script>
-        $(document).ready(function () {
-            $('#preencherDadosModal').modal('show');
-        });
-    </script>
-@endif

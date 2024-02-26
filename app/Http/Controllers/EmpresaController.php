@@ -3,16 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\Models\Empresa;
+use App\Models\Modulo;
+use App\Models\Provincia;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class EmpresaController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request, $subdomain)
     {
-        //
+        // Verifique se a empresa (subdomínio) existe no banco de dados
+        $empresa = Empresa::where('subdominio', $subdomain)->first();
+
+        if ($empresa) {
+            // A empresa existe, faça o que for necessário
+            return view('empresa.index', compact('empresa'));
+        } else {
+            // A empresa não existe, redirecione ou exiba uma mensagem de erro
+            abort(404);
+        }
     }
 
     /**
@@ -28,46 +41,33 @@ class EmpresaController extends Controller
      */
     public function store(Request $request)
     {
-        // Validar os dados recebidos do formulário
         $request->validate([
-            //'nome' => 'required|string|max:255',
-            'cod_factura' => 'nullable|string|max:20',
-            'cod_processo' => 'nullable|string|max:20',
-            'slogan' => 'nullable|string|max:100',
-            'endereco_completo' => 'nullable|string|max:200',
-            'provincia' => 'nullable|string|max:100',
-            'cidade' => 'nullable|string|max:100',
-            'dominio' => 'nullable|string|max:100',
-            'email' => 'nullable|email|max:100',
-            'fax' => 'nullable|string|max:100',
+            'nif' => 'nullable|required|unique:Empresa,NIF|string|max:50',
+            'Empresa' => 'required',
+            'atividade_comercial' => 'required|array',
             'contacto_movel' => 'nullable|string|max:100',
-            'contacto_fixo' => 'nullable|string|max:100',
-            // Adicione mais validações conforme necessário
+            'nome' => 'required|string',
         ]);
-
-        // Criar uma nova instância da empresa
-        $empresa = new Empresa();
         
-        // Preencher os campos com os dados do formulário
-        $empresa->nome = $request->input('nome');
-        $empresa->cod_factura = $request->input('cod_factura');
-        $empresa->cod_processo = $request->input('cod_processo');
-        $empresa->slogan = $request->input('slogan');
-        $empresa->endereco_completo = $request->input('endereco_completo');
-        $empresa->provincia = $request->input('provincia');
-        $empresa->cidade = $request->input('cidade');
-        $empresa->dominio = $request->input('dominio');
-        $empresa->email = $request->input('email');
-        $empresa->fax = $request->input('fax');
-        $empresa->contacto_movel = $request->input('contacto_movel');
-        $empresa->contacto_fixo = $request->input('contacto_fixo');
-        // Preencha outros campos conforme necessário
-
-        // Salvar a empresa no banco de dados
-        $empresa->save();
-
-        // Redirecionar para a página de exibição ou fazer algo mais, dependendo do seu fluxo de aplicativo
-        return redirect()->route('empresa.index')->with('success', 'Empresa cadastrada com sucesso!');
+        // Criar ou atualizar a empresa
+        $empresaData = [
+            'NIF' => $request['nif'],
+            'Empresa' => $request['Empresa'],
+            'ActividadeComercial' => implode(', ', $request['atividade_comercial']),
+            'Contacto_movel' => $request['contacto_movel'],
+        ];
+        
+        $empresa = Empresa::updateOrInsert(
+            ['NIF' => $request['nif']],
+            $empresaData
+        );
+        
+        // Atualizar o nome do usuário
+        User::where('id', Auth::user()->id)->update(['name' => $request['nome'], 'Fk_Empresa' => $empresa->Id]);
+        
+        // Redirecionar ou executar outras ações com base no seu fluxo de aplicativo
+        return redirect()->route('empresa.edit', ['id' => $empresa->Id])->with('success', 'Empresa cadastrada/atualizada com sucesso!');
+        
     }
 
     /**
@@ -83,7 +83,9 @@ class EmpresaController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $empresa = Empresa::where('Id', $id)->first();
+        $provincias = Provincia::all();
+        return view('Empresa.update', compact('empresa', 'provincias'));
     }
 
     /**
@@ -92,6 +94,43 @@ class EmpresaController extends Controller
     public function update(Request $request, string $id)
     {
         //
+        $request->validate([
+            'cod_factura' => 'nullable|string|max:20',
+            'cod_processo' => 'nullable|string|max:20',
+            'slogan' => 'nullable|string|max:100',
+            'endereco_completo' => 'nullable|string|max:200',
+            'provincia' => 'nullable|string|max:100',
+            'cidade' => 'nullable|string|unique:Empresa,Dominio|max:100',
+            'dominio' => 'nullable|string|max:100',
+            'email' => 'nullable|email|max:100',
+            'fax' => 'nullable|string|max:100',
+            'contacto_movel' => 'nullable|string|max:100',
+            'contacto_fixo' => 'nullable|string|max:100',
+            // Adicione mais validações conforme necessário
+        ]);
+
+        $empresa = Empresa::where('NIF', $id)->first();
+
+        if (!$empresa) {
+            return redirect()->back()->with('error', 'Empresa não encontrada.');
+        }
+
+        $empresa->update([
+            'CodFactura' => $request->input('cod_factura'),
+            'CodProcesso' => $request->input('cod_processo'),
+            'Slogan' => $request->input('slogan'),
+            'Endereco_completo' => $request->input('endereco_completo'),
+            'Provincia' => $request->input('provincia'),
+            'Cidade' => $request->input('cidade'),
+            'Dominio' => $request->input('dominio'),
+            'Email' => $request->input('email'),
+            'Fax' => $request->input('fax'),
+            'Contacto_movel' => $request->input('contacto_movel'),
+            'Contacto_fixo' => $request->input('contacto_fixo'),
+        ]);
+
+        return redirect()->route('empresa.edit', $empresa->Id)->with('success', 'Empresa atualizada com sucesso.');
+
     }
 
     /**
@@ -100,5 +139,17 @@ class EmpresaController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function SubscricaoModulo(){
+        $modulos = Modulo::whereNull('parent_id')->with('submodules')->get();
+        return view('Empresa.subscricao', compact('modulos'));
+    }
+
+    public function processarSubscricao(Request $request)
+    {
+        // Lógica para processar a subscrição baseada nos módulos e submódulos selecionados
+
+        return redirect()->route('Empresa.subscricao')->with('success', 'Subscrição processada com sucesso.');
     }
 }
